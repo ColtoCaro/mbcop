@@ -16,3 +16,6 @@ Description: Functions related to the model based comparison of partitions.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    cluster (>= 2.0.6)
+    ROCR (>= 1.0-7)
