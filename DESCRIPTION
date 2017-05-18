@@ -12,7 +12,6 @@ Description: Functions related to the model based comparison of partitions.
     Package features include functions to create estimates of clustering 
     sensitivity and specificity and the triplet index.  In addition to the 
     indices, the package contains tools for creating a hierarchical ROC plot.
-    The theory behind these function is explained in our unpublished paper.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
