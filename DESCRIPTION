@@ -3,9 +3,9 @@ Type: Package
 Title: Model Based Comparison of Partitions
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Jonathon", "O'Brien", email = obrienj@hms.harvard.edu, 
-      role = c("aut", "cre") )
-    person("Bahjat", "Qaqish", email = qaqish@bios.unc.edu, 
+    person("Jonathon", "O'Brien", email = "obrienj@hms.harvard.edu", 
+      role = c("aut", "cre") ),
+    person("Bahjat", "Qaqish", email = "qaqish@bios.unc.edu", 
       role = c("aut") )
     )
 Description: Functions related to the model based comparison of partitions.
@@ -16,5 +16,6 @@ License: GPL-2
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    cluster (>= 2.0.6)
+    cluster (>= 2.0.6),
     ROCR (>= 1.0-7)
+RoxygenNote: 6.0.1
