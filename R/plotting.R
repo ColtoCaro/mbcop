@@ -36,6 +36,8 @@ hroc <- function(dat,
                  methods = c("single", "complete", "average"),
                  ...){
 
+  if(max(table(labelID)) <= 1){stop("Labels require at least 2 levels")}
+
   #First reduce the data for efficient processing
   if(nrow(dat) > ncol(dat)){
     dat <- ldr(dat)
