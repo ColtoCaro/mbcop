@@ -61,7 +61,7 @@ hroc <- function(dat,
   mergeTable <- list()
   distVec <- list()
   for (i in 1:length(methods)){
-    hc[[i]] <- agnes(t(dat), method = methods[i])
+    hc[[i]] <- cluster::agnes(t(dat), method = methods[i])
     mergeTable[[i]] <- hc[[i]]$merge
     distVec[[i]] <- hc[[i]]$height[order(hc[[i]]$height)]
   }
