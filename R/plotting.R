@@ -69,7 +69,7 @@ hroc <- function(dat,
 
   #create vector for observations with known labels
   if(sum(is.na(unlist(labelID))) > 0){
-    missIndex <- lapply(labelID,
+    missIndex <- sapply(labelID,
                         function(x) sum(is.na(x)) > 0)
     realLabs <- labelID[-missIndex]
   }else{
