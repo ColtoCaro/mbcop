@@ -103,7 +103,7 @@ hroc <- function(dat,
 
   title <- paste("HROC \n", "linkage AUC's:", line2 )
 
-  if(length(methods > 1)){
+  if(length(methods) > 1){
   plot(perf@x.values[[1]], perf@y.values[[1]], col=1, main = title,
        type = "l", xlab="FPR", ylab="TPR")
 
@@ -113,7 +113,7 @@ hroc <- function(dat,
              type = "l", xlab="FPR", ylab="TPR")
     }
   }else{
-    plot(perf@x.values, perf@y.values, col=1, main = title,
+    plot(perf@x.values[[1]], perf@y.values[[1]], col=1, main = title,
          type = "l", xlab="FPR", ylab="TPR")
   }
 
