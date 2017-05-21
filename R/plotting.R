@@ -39,6 +39,10 @@ hroc <- function(dat,
                  labelID,
                  methods = c("single", "complete", "average"),
                  ...){
+  if (is.list(labelID) == FALSE){
+    labelID <- as.list(labelID)
+  }
+
 
   if(max(table(unlist(labelID))) <= 1){
     stop("At least 2 observations must share a label")
@@ -75,8 +79,8 @@ hroc <- function(dat,
 
   #create matrix with all possible pairs and a linkage vector
   pairMat <- t(combn(realObs, 2))
-  linked <- (sum((labelID[pairMat[ , 1]] %in% labelID[pairMat[ , 2]])) > 0)
-
+  linked <- Map('%in%', labelID[pairMat[ , 1]], labelID[pairMat[ , 2]])
+  linked <- sapply(linked, function(x) sum(x) > 0)
 
   #Finally get the distances at which each point merged
 
