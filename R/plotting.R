@@ -18,8 +18,12 @@
 #'
 #' @param dat An NxP data matrix where the P columns are going to be clustered.
 #'
-#' @param labelID A vector of length P giving integer or text labels for each
-#'  column.  NA's are allowed which results in the ROC plot being made
+#' @param labelID A list of length P giving a vector of integer or text
+#'  labels for each column that was clustered.  Vectors of labels are
+#'  accepted to allow observations to belong to multiple categories.  In this
+#'  case, pairs of observations will be considered linked if any of the
+#'  labels in the vector match any of the labels corresponding to the other
+#'  observation.  NA's are allowed which results in the ROC plot being made
 #'  based on the clustering of the full data but only using the non-NA labels
 #'  in computing sensitivity and specificity.
 #'
@@ -36,7 +40,13 @@ hroc <- function(dat,
                  methods = c("single", "complete", "average"),
                  ...){
 
-  if(max(table(labelID)) <= 1){stop("Labels require at least 2 levels")}
+  if(max(table(unlist(labelID))) <= 1){
+    stop("At least 2 observations must share a label")
+    }
+
+  if(max(table(unlist(labelID))) == length(labelID)){
+    stop("Labels require at least 2 levels")
+    }
 
   #First reduce the data for efficient processing
   if(nrow(dat) > ncol(dat)){
@@ -54,16 +64,18 @@ hroc <- function(dat,
 
 
   #create vector for observations with known labels
-  if(sum(is.na(labelID)) > 0){
-    realObs <- (1:length(labelID))[-which(is.na(labelID))]
-    realLabs <- labelID[-which(is.na(labelID))]
+  if(sum(is.na(unlist(labelID))) > 0){
+    missIndex <- lapply(labelID,
+                        function(x) sum(is.na(x)) > 0)
+    realLabs <- labelID[-missIndex]
   }else{
-    realObs <- (1:length(labelID))
     realLabs <- labelID
   }
+  realObs <- 1:length(realLabs)
+
   #create matrix with all possible pairs and a linkage vector
   pairMat <- t(combn(realObs, 2))
-  linked <- labelID[pairMat[ , 1]] == labelID[pairMat[ , 2]]
+  linked <- (sum((labelID[pairMat[ , 1]] %in% labelID[pairMat[ , 2]])) > 0)
 
 
   #Finally get the distances at which each point merged
