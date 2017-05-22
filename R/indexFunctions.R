@@ -32,7 +32,7 @@ pairwise = function(trueLabels, clustLabels){
     spec = freq[,1] / (freq[,1] + freq[,2])
   }
 
-  labelfreq <- table(truelabels)/length(truelabels)
+  labelfreq <- table(trueLabels)/length(trueLabels)
   prev = labelfreq %*% labelfreq
 
   ppv <- prev*sens / (prev * sens + (1-prev)*(1-spec))
