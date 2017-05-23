@@ -21,7 +21,7 @@ pairmatIndex <- function(x1, x2, n_){
   }else{
     index <- (y1 - 1) * n_ - ((y1 * (y1 - 1)) / 2) + delta
   }
-  
+
   index
 }
 
@@ -31,13 +31,13 @@ getMembers <- function(i1, i2, clustSet){
   }else{
       g1 <- clustSet[[i1]]
   }
-  
+
   if(i2 < 0){
     g2 <- -1 * i2
   }else{
     g2 <- clustSet[[i2]]
   }
-  
+
   list(g1, g2)
 }
 
@@ -45,7 +45,7 @@ pushDist <- function(mergeTable, distVec){
   n_ <- nrow(mergeTable) + 1
   clustSet <- list()
   minDist <- matrix(0, nrow = choose(n_,2), ncol = 1)
-  
+
   for(i in seq_along(distVec)){
     members <- getMembers(mergeTable[i, 1], mergeTable[i, 2], clustSet)
     clustSet[[i]] <- c(members[[1]], members[[2]])
@@ -55,9 +55,9 @@ pushDist <- function(mergeTable, distVec){
         minDist[index] <- distVec[i]
       }
     }
-    
+    print(i)
   }
-  
+
   minDist
 }
 
