@@ -70,9 +70,10 @@ hroc <- function(dat,
 
 
   #create vector for observations with known labels
-  if(sum(is.na(unlist(labelID))) > 0){
-    missIndex <- sapply(labelID,
-                        function(x) sum(is.na(x)) > 0)
+  anyMissing <- (sum(is.na(unlist(labelID))) > 0)
+  if(anyMissing){
+    missIndex <- which(sapply(labelID,
+                        function(x) sum(is.na(x)) > 0))
     realLabs <- labelID[-missIndex]
   }else{
     realLabs <- labelID
@@ -81,17 +82,37 @@ hroc <- function(dat,
 
   #create matrix with all possible pairs and a linkage vector
   pairMat <- t(combn(realObs, 2))
-  linked <- Map('%in%', labelID[pairMat[ , 1]], labelID[pairMat[ , 2]])
+  linked <- Map('%in%', realLabs[pairMat[ , 1]], realLabs[pairMat[ , 2]])
   linked <- sapply(linked, function(x) sum(x) > 0)
 
   #Finally get the distances at which each point merged
-
+  
+  #Figure out which pairs are not used because of missing labels
+  if(anyMissing){
+  obsIndex <- (1:length(labelID))[-missIndex]
+  nRemove <- length(missIndex) * length(obsIndex)
+  rmIndex <- rep(0, nRemove)
+  
+  vecMiss <- rep(missIndex, each = length(obsIndex))
+  vecObs <- rep(obsIndex, length(missIndex))
+  bound <- cbind(vecMiss, vecObs)
+  badPairs <- rbind(bound, t(combn(missIndex, 2)))
+  
+  rmIndex <- apply(badPairs, 1, function(x) 
+    pairmatIndex(x[1], x[2], length(labelID)))
+  }
+  
+  #now make the distance vector based on the complete dendrogram
   pairDist <- list()
   rocrDist <- list()
   rocrLab <- list()
   for (i in 1:length(methods)){
     pairDist[[i]] <- pushDist(mergeTable[[i]], distVec[[i]])
-    rocrDist[[i]] <- pairDist[[i]] * (-1)
+    if(anyMissing){
+      rocrDist[[i]] <- pairDist[[i]][-rmIndex, ] * (-1)
+    }else{
+      rocrDist[[i]] <- pairDist[[i]] * (-1)
+    }
     rocrLab[[i]] <- linked
   }
 
@@ -121,7 +142,7 @@ hroc <- function(dat,
   legend("bottomright", methods, lty=c(1:length(methods)),
          col = c(1:length(methods)))
 
-  pairDf <- do.call(cbind, pairDist)
+  pairDf <- -1*do.call(cbind, rocrDist)
   colnames(pairDf) <- paste(methods, "Dist", sep = "")
   df <- data.frame(pairMat, linked, pairDf)
   df
