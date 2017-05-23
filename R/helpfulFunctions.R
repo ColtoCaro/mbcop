@@ -11,6 +11,55 @@ ldr = function(x)
   return(r[-n,])   # n points (columns) in n-1 dimensions (rows)
 }
 
+pairmatIndex <- function(x1, x2, n_){
+ #Function to find the index in pairmat corresponding to x1,x2
+  y1 <- min(x1, x2)
+  y2 <- max(x1, x2)
+  delta <- y2 - y1
+  if(y1 == 1){
+    index <- delta
+  }else{
+    index <- (y1 - 1) * n_ - ((y1 * (y1 - 1)) / 2) + delta
+  }
+  
+  index
+}
+
+getMembers <- function(i1, i2, clustSet){
+  if(i1 < 0){
+    g1 <- -1 * i1
+  }else{
+      g1 <- clustSet[[i1]]
+  }
+  
+  if(i2 < 0){
+    g2 <- -1 * i2
+  }else{
+    g2 <- clustSet[[i2]]
+  }
+  
+  list(g1, g2)
+}
+
+pushDist <- function(mergeTable, distVec){
+  n_ <- nrow(mergeTable) + 1
+  clustSet <- list()
+  minDist <- matrix(0, nrow = choose(n_,2), ncol = 1)
+  
+  for(i in seq_along(distVec)){
+    members <- getMembers(mergeTable[i, 1], mergeTable[i, 2], clustSet)
+    clustSet[[i]] <- c(members[[1]], members[[2]])
+    for(j in 1:length(members[[1]])){
+      for(k in 1:length(members[[2]])){
+        index <- pairmatIndex(members[[1]][j], members[[2]][k], n_)
+        minDist[index] <- distVec[i]
+      }
+    }
+    
+  }
+  
+  minDist
+}
 
 getDist <- function(x1, x2, mergeTable, distVec){
   #Function to find the distance at which two points (x1, x2) are merged

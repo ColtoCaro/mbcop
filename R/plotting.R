@@ -61,9 +61,11 @@ hroc <- function(dat,
   mergeTable <- list()
   distVec <- list()
   for (i in 1:length(methods)){
+    print("Creating clusters")
     hc[[i]] <- cluster::agnes(t(dat), method = methods[i])
     mergeTable[[i]] <- hc[[i]]$merge
     distVec[[i]] <- hc[[i]]$height[order(hc[[i]]$height)]
+    plot(hc[[i]], which.plots = 2)
   }
 
 
@@ -88,8 +90,7 @@ hroc <- function(dat,
   rocrDist <- list()
   rocrLab <- list()
   for (i in 1:length(methods)){
-    pairDist[[i]] <- apply(pairMat, 1, function(x)
-    getDist(x[1], x[2], mergeTable[[i]], distVec[[i]]))
+    pairDist[[i]] <- pushDist(mergeTable[[i]], distVec[[i]])
     rocrDist[[i]] <- pairDist[[i]] * (-1)
     rocrLab[[i]] <- linked
   }
