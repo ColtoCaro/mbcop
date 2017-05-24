@@ -34,6 +34,11 @@
 #'  By default single, complete and average linkage functions will be
 #'  plotted together.
 #'
+#' @param clustObj A list object containing cluster objects created from
+#'  the agnes function.  By default this is NULL.  If NULL then clustering
+#'  will be performed on the data.  However, if the clustering has
+#'  already been done, computational time can be reduced by passing in the
+#'  results.
 #'
 hroc <- function(dat,
                  labelID,
