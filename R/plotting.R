@@ -38,6 +38,7 @@
 hroc <- function(dat,
                  labelID,
                  methods = c("single", "complete", "average"),
+                 clustObj = NULL,
                  ...){
   if (is.list(labelID) == FALSE){
     labelID <- as.list(labelID)
@@ -57,12 +58,17 @@ hroc <- function(dat,
     dat <- ldr(dat)
   }
 
+
   hc <- list()
   mergeTable <- list()
   distVec <- list()
   for (i in 1:length(methods)){
     print("Creating clusters")
-    hc[[i]] <- cluster::agnes(t(dat), method = methods[i])
+    if(is.null(clustObj)){
+      hc[[i]] <- cluster::agnes(t(dat), method = methods[i])
+    }else{
+      hc[[i]] <- clustObj[[i]]
+    }
     mergeTable[[i]] <- hc[[i]]$merge
     distVec[[i]] <- hc[[i]]$height[order(hc[[i]]$height)]
     plot(hc[[i]], which.plots = 2)
@@ -86,22 +92,22 @@ hroc <- function(dat,
   linked <- sapply(linked, function(x) sum(x) > 0)
 
   #Finally get the distances at which each point merged
-  
+
   #Figure out which pairs are not used because of missing labels
   if(anyMissing){
   obsIndex <- (1:length(labelID))[-missIndex]
   nRemove <- length(missIndex) * length(obsIndex)
   rmIndex <- rep(0, nRemove)
-  
+
   vecMiss <- rep(missIndex, each = length(obsIndex))
   vecObs <- rep(obsIndex, length(missIndex))
   bound <- cbind(vecMiss, vecObs)
   badPairs <- rbind(bound, t(combn(missIndex, 2)))
-  
-  rmIndex <- apply(badPairs, 1, function(x) 
+
+  rmIndex <- apply(badPairs, 1, function(x)
     pairmatIndex(x[1], x[2], length(labelID)))
   }
-  
+
   #now make the distance vector based on the complete dendrogram
   pairDist <- list()
   rocrDist <- list()

@@ -4,13 +4,18 @@
 \alias{hroc}
 \title{Hierarchical Reciever Operating Characteristic}
 \usage{
-hroc(dat, labelID, methods = c("single", "complete", "average"), ...)
+hroc(dat, labelID, methods = c("single", "complete", "average"),
+  clustObj = NULL, ...)
 }
 \arguments{
 \item{dat}{An NxP data matrix where the P columns are going to be clustered.}
 
-\item{labelID}{A vector of length P giving integer or text labels for each
-column.  NA's are allowed which results in the ROC plot being made
+\item{labelID}{A list of length P giving a vector of integer or text
+labels for each column that was clustered.  Vectors of labels are
+accepted to allow observations to belong to multiple categories.  In this
+case, pairs of observations will be considered linked if any of the
+labels in the vector match any of the labels corresponding to the other
+observation.  NA's are allowed which results in the ROC plot being made
 based on the clustering of the full data but only using the non-NA labels
 in computing sensitivity and specificity.}
 
